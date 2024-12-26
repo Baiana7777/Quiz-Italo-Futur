@@ -57,67 +57,66 @@
 <body>
   <h1>Quiz - Futuro Semplice</h1>
   <div id="quiz"></div>
-  <button id="submit">Controlla le risposte</button>
+  <button id="submit" style="display:none;">Controlla le risposte</button>
   <p id="result"></p>
+
+  <audio id="click-sound" src="https://www.soundjay.com/button/beep-07.wav"></audio>
 
   <script>
     const questions = [
       { question: "Io (andare) al mare.", options: ["andrà", "andrò", "andròò", "andremo"], correct: "andrò" },
       { question: "Tu (avere) successo.", options: ["avrò", "avrài", "avrai", "avremo"], correct: "avrai" },
-      { question: "Noi (fare) una passeggiata.", options: ["faremo", "farò", "farai", "faranno"], correct: "faremo" },
-      { question: "Loro (essere) felici.", options: ["sarai", "saranno", "sarò", "sarà"], correct: "saranno" },
-      { question: "Io (volere) partire presto.", options: ["vorrai", "vorrò", "vorrà", "vorremò"], correct: "vorrò" },
-      { question: "Voi (sapere) tutto.", options: ["saprò", "saprà", "sapranno", "saprete"], correct: "saprete" },
-      { question: "Lei (dovere) studiare.", options: ["dovrò", "dovrà", "dovremo", "dovranno"], correct: "dovrà" },
-      { question: "Io (vedere) il film.", options: ["vedremo", "vedrà", "vedrò", "vedròò"], correct: "vedrò" },
-      { question: "Tu (potere) venire domani?", options: ["potrà", "potrei", "potrai", "potranno"], correct: "potrai" },
-      { question: "Noi (vivere) in Italia.", options: ["vivrà", "vivremo", "vivranno", "vivrei"], correct: "vivremo" },
-      { question: "Loro (parlare) con il professore.", options: ["parlerò", "parlerà", "parleranno", "parleremo"], correct: "parleranno" },
-      { question: "Voi (mangiare) fuori stasera.", options: ["mangerà", "mangerete", "mangeranno", "mangerò"], correct: "mangerete" },
-      { question: "Io (scrivere) una lettera.", options: ["scriverà", "scriverò", "scriveremo", "scriverai"], correct: "scriverò" },
-      { question: "Tu (leggere) quel libro.", options: ["leggerà", "leggeranno", "leggerai", "leggeremo"], correct: "leggerai" },
-      { question: "Lei (capire) subito.", options: ["capirò", "capirà", "capiremo", "capiranno"], correct: "capirà" },
-      { question: "Noi (partire) domani.", options: ["partirò", "partiremo", "partiranno", "partirà"], correct: "partiremo" },
-      { question: "Loro (chiedere) aiuto.", options: ["chiederò", "chiederanno", "chiederai", "chiederà"], correct: "chiederanno" },
-      { question: "Voi (correre) al parco.", options: ["correrò", "correrete", "correranno", "correrà"], correct: "correrete" },
-      { question: "Io (comprare) un'auto nuova.", options: ["comprerò", "comprerà", "compreranno", "comprerai"], correct: "comprerò" },
-      { question: "Tu (giocare) a calcio.", options: ["giocherò", "giocherai", "giocherà", "giocheremo"], correct: "giocherai" }
+      { question: "Noi (fare) una passeggiata.", options: ["faremo", "farò", "farai", "faranno"], correct: "faremo" }
     ];
 
     const quizContainer = document.getElementById("quiz");
     const resultContainer = document.getElementById("result");
     const submitButton = document.getElementById("submit");
+    const clickSound = document.getElementById("click-sound");
 
-    function loadQuiz() {
-      questions.forEach((q, index) => {
-        const questionElement = document.createElement("div");
-        questionElement.classList.add("question");
-        questionElement.innerHTML = `<p>${index + 1}. ${q.question}</p>`;
+    let currentQuestionIndex = 0;
+    let score = 0;
 
-        q.options.forEach(option => {
-          const label = document.createElement("label");
-          label.innerHTML = `<input type="radio" name="question${index}" value="${option}" /> ${option}`;
-          label.classList.add("answer");
-          questionElement.appendChild(label);
-        });
+    function loadQuestion(index) {
+      quizContainer.innerHTML = "";
+      const q = questions[index];
+      const questionElement = document.createElement("div");
+      questionElement.classList.add("question");
+      questionElement.innerHTML = `<p>${index + 1}. ${q.question}</p>`;
 
-        quizContainer.appendChild(questionElement);
+      q.options.forEach(option => {
+        const label = document.createElement("label");
+        label.innerHTML = `<input type="radio" name="question${index}" value="${option}" /> ${option}`;
+        label.classList.add("answer");
+        label.addEventListener("click", () => clickSound.play());
+        questionElement.appendChild(label);
       });
+
+      quizContainer.appendChild(questionElement);
     }
 
-    function checkAnswers() {
-      let score = 0;
-      questions.forEach((q, index) => {
-        const selectedAnswer = document.querySelector(`input[name="question${index}"]:checked`);
-        if (selectedAnswer && selectedAnswer.value === q.correct) {
-          score++;
-        }
-      });
+    function checkAnswer() {
+      const selectedAnswer = document.querySelector(`input[name="question${currentQuestionIndex}"]:checked`);
+      if (selectedAnswer && selectedAnswer.value === questions[currentQuestionIndex].correct) {
+        score++;
+      }
+
+      currentQuestionIndex++;
+      if (currentQuestionIndex < questions.length) {
+        loadQuestion(currentQuestionIndex);
+      } else {
+        resultContainer.textContent = `Hai risposto correttamente a ${score} su ${questions.length} domande!`;
+        submitButton.style.display = 'block';
+      }
+    }
+
+    submitButton.addEventListener("click", () => {
       resultContainer.textContent = `Hai risposto correttamente a ${score} su ${questions.length} domande!`;
-    }
+    });
 
-    submitButton.addEventListener("click", checkAnswers);
-    loadQuiz();
+    loadQuestion(0);
+
+    quizContainer.addEventListener("change", checkAnswer);
   </script>
 </body>
 </html>
