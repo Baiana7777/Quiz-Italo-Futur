@@ -7,10 +7,23 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      margin: 20px;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #333;
     }
     h1 {
       text-align: center;
+      padding: 20px;
+      color: #fff;
+    }
+    #quiz {
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      margin: 20px auto;
+      max-width: 800px;
     }
     .question {
       margin: 20px 0;
@@ -19,9 +32,25 @@
       display: block;
       margin: 10px 0;
     }
+    #submit {
+      display: block;
+      margin: 20px auto;
+      padding: 10px 20px;
+      background-color: #764ba2;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    #submit:hover {
+      background-color: #667eea;
+    }
     #result {
+      text-align: center;
       margin-top: 20px;
       font-weight: bold;
+      font-size: 18px;
     }
   </style>
 </head>
